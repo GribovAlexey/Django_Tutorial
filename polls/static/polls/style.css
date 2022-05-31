@@ -1,0 +1,9 @@
+body {
+     background: white url("images/pog.jpg") no-repeat;
+}
+
+li a {
+    background-color: #cbcfd1;
+    color: green;
+}
+
