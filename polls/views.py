@@ -37,9 +37,9 @@ class ResultView(generic.DetailView):
 
 
 def validate_value(value):
-    if value<0:
+    if value < 0:
         raise ValidationError(_('%(value)s is wrong'),
-            params={'value': value},)
+                              params={'value': value}, )
 
 
 def vote(request, question_id):
@@ -59,7 +59,7 @@ def vote(request, question_id):
             'error_message': "Incorrect choice",
         })
     else:
-        validate_value(selected_choice)
+        validate_value(selected_choice.votes)
         selected_choice.votes = F('votes') + 1
         selected_choice.save()
         return redirect('polls:result', pk=question_id)
