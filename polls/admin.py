@@ -14,10 +14,18 @@ class QuestionAdmin(admin.ModelAdmin):
         ('Date info', {'fields': ['pub_date'], 'classes': ['collapse']}),
     ]
     inlines = [ChoiceInline]
-    list_display = ('question_text', 'pub_date', 'was_published_recently')
-    list_filter = ['pub_date']
+    list_display = ('question_text', 'pub_date', 'get_value')
+    list_filter = ('pub_date',)
     search_fields = ['question_text']
-    # add func was published recently
+
+    def get_queryset(self, request):
+        return super().get_queryset(request).do_annotation()
+
+    def get_value(self, obj):
+        return obj.was_published_recently
+
+    get_value.admin_order_field = "was_published_recently"
+    get_value.short_description = "was published recently"
 
 
 admin.site.register(Question, QuestionAdmin)

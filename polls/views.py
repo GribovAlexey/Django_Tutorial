@@ -1,7 +1,5 @@
 import logging
 
-from django.core.exceptions import ValidationError
-from django.utils.translation import gettext_lazy as _
 from django.db.models import F
 from django.shortcuts import render, get_object_or_404, redirect
 from django.utils import timezone
@@ -17,11 +15,10 @@ class IndexView(generic.ListView):
     context_object_name = 'latest_question_list'
     paginate_by = 5
 
-    """ Returns last 5 published questions """
-
     def get_queryset(self):
-        return Question.objects.filter(pub_date__lte=timezone.now()).order_by(
-            '-pub_date')  # [:5]
+        return Question.objects.filter(
+            pub_date__lte=timezone.now()
+        ).order_by('-pub_date')
 
 
 class DetailView(generic.DetailView):
@@ -41,12 +38,6 @@ def redirect_to_index(self):
     return redirect('polls:index')
 
 
-def validate_value(value):
-    if value < 0:
-        raise ValidationError(_('%(value)s is wrong'),
-                              params={'value': value}, )
-
-
 def vote(request, question_id):
     question = get_object_or_404(Question, pk=question_id)
     try:
@@ -64,7 +55,6 @@ def vote(request, question_id):
             'error_message': "Incorrect choice",
         })
     else:
-        validate_value(selected_choice.votes)
         selected_choice.votes = F('votes') + 1
         selected_choice.save()
         return redirect('polls:result', pk=question_id)
