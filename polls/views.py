@@ -1,9 +1,13 @@
+import logging
+
+from django.db.models import F
 from django.shortcuts import render, get_object_or_404, redirect
-from django.views import generic
 from django.utils import timezone
+from django.views import generic
 
 from .models import Question, Choice
-from django.db.models import F
+
+logger = logging.getLogger(__name__)
 
 
 class IndexView(generic.ListView):
@@ -34,10 +38,17 @@ def vote(request, question_id):
     question = get_object_or_404(Question, pk=question_id)
     try:
         selected_choice = question.choice_set.get(pk=request.POST['choice'])
-    except (KeyError, Choice.DoesNotExist):
+    except (KeyError) as exc:
+        logger.error(exc)
         return render(request, 'polls/detail.html', {
             'question': question,
             'error_message': "You didn't select a choice",
+        })
+    except (Choice.DoesNotExist) as exc:
+        logger.error(exc)
+        return render(request, 'polls/detail.html', {
+            'question': question,
+            'error_message': "Incorrect choice",
         })
     else:
         selected_choice.votes = F('votes') + 1
