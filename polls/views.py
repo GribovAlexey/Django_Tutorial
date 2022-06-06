@@ -1,7 +1,7 @@
 import logging
+
 from django.core.exceptions import ValidationError
 from django.utils.translation import gettext_lazy as _
-
 from django.db.models import F
 from django.shortcuts import render, get_object_or_404, redirect
 from django.utils import timezone
@@ -15,12 +15,13 @@ logger = logging.getLogger(__name__)
 class IndexView(generic.ListView):
     template_name = 'polls/index.html'
     context_object_name = 'latest_question_list'
+    paginate_by = 5
 
     """ Returns last 5 published questions """
 
     def get_queryset(self):
         return Question.objects.filter(pub_date__lte=timezone.now()).order_by(
-            '-pub_date')[:5]
+            '-pub_date')  # [:5]
 
 
 class DetailView(generic.DetailView):
@@ -34,6 +35,10 @@ class DetailView(generic.DetailView):
 class ResultView(generic.DetailView):
     model = Question
     template_name = 'polls/result.html'
+
+
+def redirect_to_index(self):
+    return redirect('polls:index')
 
 
 def validate_value(value):

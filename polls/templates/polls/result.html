@@ -5,7 +5,9 @@
     <title>Result</title>
 </head>
 <body>
-    <h1>{{ question.question_text }}</h1>
+    <h1><a href="{% url 'polls:index' %}"> Back to list </a></h1>
+
+    <h2>{{ question.question_text }}</h2>
 
     <ul>
         {% for choice in question.choice_set.all %}

@@ -5,6 +5,7 @@
     <title>Detail page</title>
 </head>
 <body>
+    <h1><a href="{% url 'polls:index' %}"> Back to list </a></h1>
     <form action="{% url 'polls:vote' question.id %}" method="post">
         {% csrf_token %}
         <fieldset>
